@@ -46,20 +46,20 @@ class LinkedList:
         self.length += 1
         return True
         
-    def insert(self, value, pos):
-        if(pos < 1 and pos != -1): return False
+    def insert(self, value, index):
+        if(index < 1 and index != -1): return False
         new_node = Node(value)
         if(self.length == 0):
             self.head = new_node
             self.tail = new_node
-        elif(pos == 1):
+        elif(index == 0):
             return self.preprend(value)
-        elif(pos >= self.length or pos == -1):
+        elif(index >= self.length or index == -1):
             return self.append(value)
         else:
             next_node = self.head
-            for i in range(self.length - 1):
-                if(i == pos-1):
+            for i in range(self.length):
+                if(i == index):
                     new_node.next = next_node.next
                     next_node.next = new_node
                     break
@@ -85,21 +85,77 @@ class LinkedList:
             cont += 1
             current_node = current_node.next
         if current_node is not None:
-            return current_node.value
+            return current_node
         else: return -1
+        
+    def set(self, index, value):
+        temp = self.get(index)
+        if temp:
+            temp.value = value
+            return True
+        return False
     
+    def pop_first(self):
+        if(self.length == 0): return None
+        popped_node = self.head
+        if(self.length == 1):
+            self.head = None
+            self.tail = None
+        else:
+            self.head = self.head.next
+            popped_node.next = None
+        self.length -= 1
+        return popped_node
+    
+    def pop(self):
+        if self.length == 0: return None
+        popped_node = self.tail
+        if self.length == 1:
+            self.head = None
+            self.tail = None
+        else:
+            current_node = self.head
+            past_node = None
+            
+            while current_node.next is not None:
+                past_node = current_node
+                current_node = current_node.next
+            self.tail = past_node
+            self.tail.next = None
+        self.length -= 1
+        return popped_node
+    
+    def remove(self, index):
+        if self.length == 0: return None
+        if index < 0 and index != -1 or index > self.length: return None
+        if index == -1 or index == self.length - 1:
+            return self.pop()
+        elif index == 0:
+            return self.pop_first()
+        else:
+            current_node = self.head
+            if self.length == 1:
+                self.head = self.tail = None
+            else:
+                past_node = None
+                for _ in range(index):
+                    past_node = current_node
+                    current_node = current_node.next
+                past_node.next = current_node.next
+                current_node.next = None
+        self.length -= 1
+        return current_node
+    
+    def delete_all(self):
+        self.head = self.tail = None
+        self.length = 0
     
 
 list = LinkedList()
 list.append(10)
 list.append(5)
-list.append(7)
+list.insert(3, 2)
+list.insert(4, 0)
+list.insert(33, -1)
+# list.delete_all()
 print(list)
-print(list)
-list.insert(3,2)
-print(list)
-list.insert(33,-1)
-print(list)
-print(list.search(5))
-print(list.search(400))
-print(list.get(4))
